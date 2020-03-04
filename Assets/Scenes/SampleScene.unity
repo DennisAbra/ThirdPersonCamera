@@ -905,7 +905,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   currentZoom: 1
-  camMovespeed: 100
+  camMovespeed: 10
   clampAngleMax: 90
   clampAngleMin: -90
   inputSens: 100

@@ -6,7 +6,7 @@ public class SmartCamera : MonoBehaviour
 {
     public GameObject playerObj;
     public LayerMask toHit;
-    
+
     public float currentZoom;
     public float camMovespeed = 100.0f;
     public float clampAngleMax = 90.0f;
@@ -26,6 +26,8 @@ public class SmartCamera : MonoBehaviour
     Vector3 thirtyDegLeft;
     Vector3 sixtyDegLeft;
 
+    bool inAnimation = false;
+
     private void Start()
     {
         cam = GetComponentInChildren<Camera>().gameObject;
@@ -43,12 +45,13 @@ public class SmartCamera : MonoBehaviour
 
     private void LateUpdate()
     {
-        UpdateCameraPosition();
+        if (!inAnimation)
+            UpdateCameraPosition();
     }
 
     void DrawLines()
     {
-        Vector3 forwardVector = cam.transform.position- playerObj.transform.position;
+        Vector3 forwardVector = cam.transform.position - playerObj.transform.position;
         Vector3 rightVector = Vector3.Cross(forwardVector.normalized, Vector3.up) * forwardVector.magnitude;
 
         thirtyDegRight = playerObj.transform.position + rightVector * Mathf.Sin(30 * Mathf.Deg2Rad) + forwardVector * Mathf.Cos(30 * Mathf.Deg2Rad);
@@ -93,7 +96,7 @@ public class SmartCamera : MonoBehaviour
     void CollisionAvoidance()
     {
         RaycastHit hit;
-        //float step = camMovespeed * Time.deltaTime;
+        float step = camMovespeed * Time.deltaTime;
 
         if (Physics.Linecast(playerObj.transform.position, cam.transform.position, out hit, toHit))
         {
@@ -106,35 +109,38 @@ public class SmartCamera : MonoBehaviour
         {
             //30 deg left from player to cam
             //rotate 30 deg right to avoid obstacle
-            Debug.Log("HIT POS: " + hit.collider.gameObject.transform.position);
-            Debug.Log("SIXTY POS: " + sixtyDegLeft);
-            hit.collider.gameObject.transform.position += new Vector3(5, 5, 5);
+            if (!inAnimation)
+            {
+                inAnimation = true;
+                //Check when we reach location
+                //Turn off inAnimation
+                //LookAt - Player
+                //Undersök DollyDir i CameraCollision.
+                Vector3 newPos = thirtyDegRight;
+                Vector3.Lerp(cam.transform.position, newPos, step);
+            }
         }
         else if (Physics.Linecast(playerObj.transform.position, sixtyDegLeft, out hit, toHit))
         {
             //60 deg left from player to cam
             //rotate 30 deg right to avoid obstacle
-            Debug.Log("HIT POS: "+hit.collider.gameObject.transform.position);
-            Debug.Log("SIXTY POS: " + sixtyDegLeft);
-            hit.collider.gameObject.transform.position += new Vector3(5, 5, 5);
-            //cam.transform.position = Vector3.Lerp(cam.transform.position, thirtyDegLeft * thirtyDegLeft.magnitude, step);
+            Vector3 newPos = thirtyDegRight;
+            transform.position = Vector3.Lerp(cam.transform.position, newPos, step);
         }
-        else if(Physics.Linecast(playerObj.transform.position, thirtyDegRight, out hit, toHit))
+        else if (Physics.Linecast(playerObj.transform.position, thirtyDegRight, out hit, toHit))
         {
             //30 deg right from player to cam
             //rotate 30 deg to avoid
-            Debug.Log("HIT POS: " + hit.collider.gameObject.transform.position);
-            Debug.Log("SIXTY POS: " + sixtyDegLeft);
-            hit.collider.gameObject.transform.position += new Vector3(5, 5, 5);
+            Vector3 newPos = thirtyDegLeft;
+            Vector3.Lerp(cam.transform.position, newPos, step);
         }
         else if (Physics.Linecast(playerObj.transform.position, sixtyDegRight, out hit, toHit))
         {
             //60 deg right from player to cam
             //rotate 60 deg to avoid
             // PUT IN LOGIC TO MOVE CAMERA CORRECTLY
-            Debug.Log("HIT POS: " + hit.collider.gameObject.transform.position);
-            Debug.Log("SIXTY POS: " + sixtyDegLeft);
-            hit.collider.gameObject.transform.position += new Vector3(5, 5, 5);
+            Vector3 newPos = thirtyDegLeft;
+            Vector3.Lerp(cam.transform.position, newPos, step);
         }
     }
 }
