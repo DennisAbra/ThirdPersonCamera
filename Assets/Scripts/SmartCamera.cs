@@ -39,8 +39,12 @@ public class SmartCamera : MonoBehaviour
     private void Update()
     {
         DrawLines();
-        RotateCameraWithInput();
-        CollisionAvoidance();
+        if (!inAnimation)
+        {
+            RotateCameraWithInput();
+            CollisionAvoidance();
+
+        }
     }
 
     private void LateUpdate()
@@ -96,7 +100,7 @@ public class SmartCamera : MonoBehaviour
     void CollisionAvoidance()
     {
         RaycastHit hit;
-        float step = camMovespeed * Time.deltaTime;
+
 
         if (Physics.Linecast(playerObj.transform.position, cam.transform.position, out hit, toHit))
         {
@@ -109,38 +113,40 @@ public class SmartCamera : MonoBehaviour
         {
             //30 deg left from player to cam
             //rotate 30 deg right to avoid obstacle
-            if (!inAnimation)
-            {
-                inAnimation = true;
-                //Check when we reach location
-                //Turn off inAnimation
-                //LookAt - Player
-                //Undersök DollyDir i CameraCollision.
-                Vector3 newPos = thirtyDegRight;
-                Vector3.Lerp(cam.transform.position, newPos, step);
-            }
+
+            inAnimation = true;
+            //Check when we reach location
+            //Turn off inAnimation
+            //LookAt - Player
+            //Undersök DollyDir i CameraCollision.
+            float step = camMovespeed * Time.deltaTime;
+            Vector3 newPos = thirtyDegRight;
+            transform.position = Vector3.Lerp(transform.position, newPos, step);
         }
         else if (Physics.Linecast(playerObj.transform.position, sixtyDegLeft, out hit, toHit))
         {
             //60 deg left from player to cam
             //rotate 30 deg right to avoid obstacle
+
+            float step = camMovespeed * Time.deltaTime;
+            inAnimation = true;
             Vector3 newPos = thirtyDegRight;
-            transform.position = Vector3.Lerp(cam.transform.position, newPos, step);
+            transform.position = Vector3.Lerp(transform.position, newPos, step);
         }
-        else if (Physics.Linecast(playerObj.transform.position, thirtyDegRight, out hit, toHit))
-        {
-            //30 deg right from player to cam
-            //rotate 30 deg to avoid
-            Vector3 newPos = thirtyDegLeft;
-            Vector3.Lerp(cam.transform.position, newPos, step);
-        }
-        else if (Physics.Linecast(playerObj.transform.position, sixtyDegRight, out hit, toHit))
-        {
-            //60 deg right from player to cam
-            //rotate 60 deg to avoid
-            // PUT IN LOGIC TO MOVE CAMERA CORRECTLY
-            Vector3 newPos = thirtyDegLeft;
-            Vector3.Lerp(cam.transform.position, newPos, step);
-        }
+        //else if (Physics.Linecast(playerObj.transform.position, thirtyDegRight, out hit, toHit))
+        //{
+        //    //30 deg right from player to cam
+        //    //rotate 30 deg to avoid
+        //    Vector3 newPos = thirtyDegLeft;
+        //    cam.transform.position = newPos; //Vector3.Lerp(cam.transform.position, newPos, step);
+        //}
+        //else if (Physics.Linecast(playerObj.transform.position, sixtyDegRight, out hit, toHit))
+        //{
+        //    //60 deg right from player to cam
+        //    //rotate 60 deg to avoid
+        //    // PUT IN LOGIC TO MOVE CAMERA CORRECTLY
+        //    Vector3 newPos = thirtyDegLeft;
+        //    cam.transform.position = Vector3.Lerp(cam.transform.position, newPos, step);
+        //}
     }
 }

@@ -49,6 +49,7 @@ public class ThirdPersonCamera : MonoBehaviour
         rotX += finalInputY * inputSens * Time.deltaTime;
         rotX = Mathf.Clamp(rotX, clampAngleMin, clampAngleMax);
 
+        camFollowObj.transform.parent.Rotate(Vector3.up * mouseX * inputSens * Time.deltaTime);
         Quaternion localRotation = Quaternion.Euler(rotX, rotY, 0);
         transform.rotation = localRotation;
     }

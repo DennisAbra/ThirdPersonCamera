@@ -1,18 +1,16 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+
 public class Movement : MonoBehaviour
 {
-    Rigidbody rigidBody;
-
     float horizontal;
     float vertical;
     public float speed;
-
+    CharacterController controller;
 
     void Start()
     {
-        rigidBody = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
     }
 
     
@@ -20,12 +18,9 @@ public class Movement : MonoBehaviour
     {
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
-        if (horizontal != 0 || vertical != 0)
-            MoveTo();
+        Vector3 moveVector = transform.right * horizontal + transform.forward * vertical;
+        controller.Move(moveVector * speed * Time.deltaTime);
     }
 
-    void MoveTo()
-    {
-        rigidBody.MovePosition(transform.position + new Vector3(horizontal * speed, 0, vertical * speed).normalized);
-    }
+
 }
