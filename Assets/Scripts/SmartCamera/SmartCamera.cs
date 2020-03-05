@@ -39,18 +39,14 @@ public class SmartCamera : MonoBehaviour
     private void Update()
     {
         DrawLines();
-        if (!inAnimation)
-        {
-            RotateCameraWithInput();
-            CollisionAvoidance();
+        RotateCameraWithInput();
+        CollisionAvoidance();
 
-        }
     }
 
     private void LateUpdate()
     {
-        if (!inAnimation)
-            UpdateCameraPosition();
+        UpdateCameraPosition();
     }
 
     void DrawLines()
@@ -104,34 +100,20 @@ public class SmartCamera : MonoBehaviour
 
         if (Physics.Linecast(playerObj.transform.position, cam.transform.position, out hit, toHit))
         {
-            //Straight line from player to camera
-            Debug.Log("HIT POS: " + hit.collider.gameObject.transform.position);
-            Debug.Log("SIXTY POS: " + sixtyDegLeft);
-            hit.collider.gameObject.transform.position += new Vector3(5, 5, 5);
+
         }
         else if (Physics.Linecast(playerObj.transform.position, thirtyDegLeft, out hit, toHit))
         {
-            //30 deg left from player to cam
-            //rotate 30 deg right to avoid obstacle
 
-            inAnimation = true;
-            //Check when we reach location
-            //Turn off inAnimation
-            //LookAt - Player
-            //Undersök DollyDir i CameraCollision.
-            float step = camMovespeed * Time.deltaTime;
-            Vector3 newPos = thirtyDegRight;
-            transform.position = Vector3.Lerp(transform.position, newPos, step);
         }
         else if (Physics.Linecast(playerObj.transform.position, sixtyDegLeft, out hit, toHit))
         {
-            //60 deg left from player to cam
-            //rotate 30 deg right to avoid obstacle
 
-            float step = camMovespeed * Time.deltaTime;
-            inAnimation = true;
-            Vector3 newPos = thirtyDegRight;
-            transform.position = Vector3.Lerp(transform.position, newPos, step);
+            //LERP THIS AND CLEAN UP
+            //MOVE TO SEPERATE SCRIPT
+            //TODO: figure out how to allow the player to override this avoidence system
+            GetComponentInChildren<Camera>().transform.position = thirtyDegRight;
+            GetComponentInChildren<Camera>().transform.rotation = Quaternion.LookRotation((transform.position - GetComponentInChildren<Camera>().transform.position) );
         }
         //else if (Physics.Linecast(playerObj.transform.position, thirtyDegRight, out hit, toHit))
         //{
