@@ -5,7 +5,6 @@ using UnityEngine;
 public class SmartCamera : MonoBehaviour
 {
     public GameObject playerObj;
-    public LayerMask toHit;
 
     public float currentZoom;
     public float camMovespeed = 100.0f;
@@ -21,12 +20,7 @@ public class SmartCamera : MonoBehaviour
     float rotY;
 
     GameObject cam;
-    Vector3 thirtyDegRight;
-    Vector3 sixtyDegRight;
-    Vector3 thirtyDegLeft;
-    Vector3 sixtyDegLeft;
 
-    bool inAnimation = false;
 
     private void Start()
     {
@@ -38,10 +32,7 @@ public class SmartCamera : MonoBehaviour
 
     private void Update()
     {
-        DrawLines();
         RotateCameraWithInput();
-        CollisionAvoidance();
-
     }
 
     private void LateUpdate()
@@ -49,27 +40,6 @@ public class SmartCamera : MonoBehaviour
         UpdateCameraPosition();
     }
 
-    void DrawLines()
-    {
-        Vector3 forwardVector = cam.transform.position - playerObj.transform.position;
-        Vector3 rightVector = Vector3.Cross(forwardVector.normalized, Vector3.up) * forwardVector.magnitude;
-
-        thirtyDegRight = playerObj.transform.position + rightVector * Mathf.Sin(30 * Mathf.Deg2Rad) + forwardVector * Mathf.Cos(30 * Mathf.Deg2Rad);
-        sixtyDegRight = playerObj.transform.position + rightVector * Mathf.Sin(60 * Mathf.Deg2Rad) + forwardVector * Mathf.Cos(60 * Mathf.Deg2Rad);
-        thirtyDegLeft = playerObj.transform.position - rightVector * Mathf.Sin(30 * Mathf.Deg2Rad) + forwardVector * Mathf.Cos(30 * Mathf.Deg2Rad);
-        sixtyDegLeft = playerObj.transform.position - rightVector * Mathf.Sin(60 * Mathf.Deg2Rad) + forwardVector * Mathf.Cos(60 * Mathf.Deg2Rad);
-
-
-        //Linetraces
-        Debug.DrawLine(playerObj.transform.position, cam.transform.position);
-        Debug.DrawLine(playerObj.transform.position, thirtyDegLeft);
-        Debug.DrawLine(playerObj.transform.position, thirtyDegRight);
-        Debug.DrawLine(playerObj.transform.position, sixtyDegLeft);
-        Debug.DrawLine(playerObj.transform.position, sixtyDegRight);
-
-
-
-    }
 
     void RotateCameraWithInput()
     {
@@ -93,42 +63,51 @@ public class SmartCamera : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, playerObj.transform.position, step);
     }
 
-    void CollisionAvoidance()
-    {
-        RaycastHit hit;
+    //void CollisionAvoidance()
+    //{
+    //    RaycastHit hit;
 
 
-        if (Physics.Linecast(playerObj.transform.position, cam.transform.position, out hit, toHit))
-        {
+    //    if (Physics.Linecast(playerObj.transform.position, cam.transform.position, out hit, toHit))
+    //    {
 
-        }
-        else if (Physics.Linecast(playerObj.transform.position, thirtyDegLeft, out hit, toHit))
-        {
+    //    }
+    //    else if (Physics.Linecast(playerObj.transform.position, thirtyDegLeft, out hit, toHit))
+    //    {
+    //        t = 0;
+    //    }
+    //    else if (Physics.Linecast(playerObj.transform.position, sixtyDegLeft, out hit, toHit))
+    //    {
+    //        //MOVE TO SEPERATE SCRIPT
+    //        //TODO: figure out how to allow the player to override this avoidence system
+    //        cam.transform.position = Vector3.Lerp(cam.transform.position, thirtyDegRight, Time.deltaTime * speed);
+    //        cam.transform.rotation = Quaternion.Lerp(cam.transform.rotation, Quaternion.LookRotation((transform.position - cam.transform.position)), Time.deltaTime * speed);
+    //        t = 0;
+    //    }
+    //    else
+    //    {
 
-        }
-        else if (Physics.Linecast(playerObj.transform.position, sixtyDegLeft, out hit, toHit))
-        {
-
-            //LERP THIS AND CLEAN UP
-            //MOVE TO SEPERATE SCRIPT
-            //TODO: figure out how to allow the player to override this avoidence system
-            GetComponentInChildren<Camera>().transform.position = thirtyDegRight;
-            GetComponentInChildren<Camera>().transform.rotation = Quaternion.LookRotation((transform.position - GetComponentInChildren<Camera>().transform.position) );
-        }
-        //else if (Physics.Linecast(playerObj.transform.position, thirtyDegRight, out hit, toHit))
-        //{
-        //    //30 deg right from player to cam
-        //    //rotate 30 deg to avoid
-        //    Vector3 newPos = thirtyDegLeft;
-        //    cam.transform.position = newPos; //Vector3.Lerp(cam.transform.position, newPos, step);
-        //}
-        //else if (Physics.Linecast(playerObj.transform.position, sixtyDegRight, out hit, toHit))
-        //{
-        //    //60 deg right from player to cam
-        //    //rotate 60 deg to avoid
-        //    // PUT IN LOGIC TO MOVE CAMERA CORRECTLY
-        //    Vector3 newPos = thirtyDegLeft;
-        //    cam.transform.position = Vector3.Lerp(cam.transform.position, newPos, step);
-        //}
-    }
+    //        t += Time.deltaTime;
+    //        if (t > 0.5f)
+    //        {
+    //        cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, initialLocalPos, Time.deltaTime * speed * 0.5f);
+    //        cam.transform.localRotation = Quaternion.Lerp(cam.transform.localRotation, initialLocalRotation, Time.deltaTime * speed * 0.5f);
+    //        }
+    //    }
+    //    //else if (Physics.Linecast(playerObj.transform.position, thirtyDegRight, out hit, toHit))
+    //    //{
+    //    //    //30 deg right from player to cam
+    //    //    //rotate 30 deg to avoid
+    //    //    Vector3 newPos = thirtyDegLeft;
+    //    //    cam.transform.position = newPos; //Vector3.Lerp(cam.transform.position, newPos, step);
+    //    //}
+    //    //else if (Physics.Linecast(playerObj.transform.position, sixtyDegRight, out hit, toHit))
+    //    //{
+    //    //    //60 deg right from player to cam
+    //    //    //rotate 60 deg to avoid
+    //    //    // PUT IN LOGIC TO MOVE CAMERA CORRECTLY
+    //    //    Vector3 newPos = thirtyDegLeft;
+    //    //    cam.transform.position = Vector3.Lerp(cam.transform.position, newPos, step);
+    //    //}
+    //}
 }

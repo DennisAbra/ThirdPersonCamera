@@ -798,6 +798,7 @@ GameObject:
   - component: {fileID: 1407559370}
   - component: {fileID: 1407559372}
   - component: {fileID: 1407559371}
+  - component: {fileID: 1407559373}
   m_Layer: 0
   m_Name: TestCamera
   m_TagString: Untagged
@@ -870,6 +871,22 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &1407559373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407559369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb9e6c608ca17ff449bf2da90baa1949, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toHit:
+    serializedVersion: 2
+    m_Bits: 256
+  avoidanceStrength: 50
 --- !u!1 &1456709298
 GameObject:
   m_ObjectHideFlags: 0
@@ -953,9 +970,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerObj: {fileID: 1159700354}
-  toHit:
-    serializedVersion: 2
-    m_Bits: 256
   currentZoom: 1
   camMovespeed: 100
   clampAngleMax: 90
